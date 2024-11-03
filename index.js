@@ -1,4 +1,3 @@
-"use strict";
 let username = "Lee";
 // let age = 31;
 let born = "Seoul";
@@ -218,3 +217,244 @@ var 자료 = {
  */
 function 내함수(a) { }
 내함수(자료.name);
+let person = { student: true, age: 20 };
+function 함수임({ student, age }) {
+    console.log(student, age);
+}
+함수임({ student: true, age: 20 });
+// 숫자 여러개를 입력하면 최댓값을 return 해주는 함수
+const findMaxValue = (...numbers) => {
+    console.log(Math.max(...numbers));
+};
+findMaxValue(6, 3, 7, 2, 9);
+const printAllArgs = ({ user, comment, admin }) => {
+    console.log(`Argument {user: ${user}, comment: ${comment}, admin: ${admin}}`);
+};
+printAllArgs({ user: "kim", comment: [3, 5, 4], admin: false });
+// array 자료를 파라미터로 입력할 수 있는 함수
+const printAllArgs2 = ([a, b, c]) => {
+    console.log(`Argument ${a} ${b} ${c}`);
+};
+printAllArgs2([40, "wine", false]);
+// null & undefined 체크하기 위한 narrowing
+const checkNullOrUndefined = (x) => {
+    // if (typeof x === "string") {
+    //   return console.log(`입력된 값: ${x}`);
+    // }
+    // else {
+    //   console.log("입력된 값이 없습니다.");
+    // }
+    if (x && typeof x === "string") {
+        return console.log(`입력된 값: ${x}`);
+    }
+};
+checkNullOrUndefined();
+function hasProperty(animal) {
+    if ("swim" in animal) {
+        return animal.swim;
+    }
+    return animal.fly;
+}
+console.log(hasProperty({ swim: "물고기 입니다." }));
+console.log(hasProperty({ fly: "새 입니다." }));
+// class로부터 생산된 object는 instanceof로 narrowing
+let date = new Date();
+if (date instanceof Date) {
+    console.log("Data class로부터 생상된 Object입니다.");
+}
+// literal type의 narrowing
+// type Boat = {
+//   wheel: "0개";
+//   color: string;
+// };
+// interface Bike {
+//   wheel: "2개";
+//   color: string;
+// }
+const checkVehicle = (x) => {
+    if (x.wheel === "0개") {
+        console.log("이 보트의 색상은 " + x.color + " 입니다.");
+    }
+    else {
+        console.log("이 오토바이의 색상은 " + x.color + " 입니다.");
+    }
+};
+checkVehicle({ wheel: "0개", color: "회색" });
+checkVehicle({ wheel: "2개", color: "검정색" });
+// never type
+const throwErrorOrInfiniteLoop = () => {
+    /**
+     * never type은 절대 발생하지 않는 값의 타입
+     * 예를 들어
+     * 1. 함수가 정상적으로 종료되지 않고, 예외를 던지거나 프로그램이 종료되는 함수의 반환 타입
+     * throw new Error()
+     * 2. 끝나지 않는 함수 (무한 루프)
+     * while(true) {}
+     */
+    throw new Error();
+};
+// 객체지향 언어에서 제공하는 public, private, static, protected 키워드 사용
+class Human {
+    constructor(firstname) {
+        this.firstname = firstname;
+        // firstname;
+        this.lastname = "Kim";
+        this.sex = "male";
+        this.firstname = firstname;
+        this.username = firstname + " " + this.lastname;
+    }
+    setLastName() {
+        this.lastname = "Park";
+    }
+    static setConfig(key, value) {
+        this.config[key] = value;
+    }
+    static getConfig(key) {
+        return this.config[key];
+    }
+}
+Human.AGE = 20; // 유전자 안 내려주고 부모만 쓸 거임
+Human.config = {}; // 클래스 내부에서만 접근할 수 있도록 할 거임
+let man = new Human("Minsoo");
+console.log(`firstname: ${man.firstname}`);
+// man.lastname; // 'lastname' 속성은 private이며 'Man' 클래스 내에서만 액세스할 수 있습니다.
+console.log(`username: ${man.username}`);
+man.setLastName(); // Kim -> Park
+console.log(man); // {firstname: 'Minsoo', lastname: 'Park', username: 'Minsoo Kim'}
+class Man extends Human {
+    changeLastname() {
+        // this.lastname = "Lee"; // 'lastname' 속성은 private이며 'Human' 클래스 내에서만 액세스할 수 있습니다.
+    }
+    changeSex() {
+        this.sex = "female";
+    }
+}
+let man2 = new Man("Gildong");
+// 일반 변수에 접근하는 경우
+// man2.age; // 가능
+// Man.age; // 불가능 'typeof Man' 형식에 'age' 속성이 없습니다.
+// static 변수에 접근하는 경우
+// man2.AGE; // 'age' 속성이 'Man' 형식에 없습니다. 대신 정적 멤버 'Man.age'에 액세스하려고 하셨습니까?
+Man.AGE; // 가능
+// Human.config // 'config' 속성은 private이며 'Human' 클래스 내에서만 액세스할 수 있습니다.
+Human.setConfig("취미", "낚시");
+console.log(Human.getConfig("취미")); // 낚시
+/**
+ * x, y, z 속성의 특징
+ *
+ * x는 나만 접근할 수 있도록 할 거임 / 클래스 내부(부모)에서만 접근 가능한 메서드를 통해서 제어 가능 / 부모에서만 수정 가능
+ * y는 유전자 안 내려주고 나(부모 class)만 접근할 수 있도록 할 거임 / 인스턴스(자식)가 아니라서 클래스 자체(부모)에만 속하는 변수
+ * z는 자식 class한테 까지만 내려줄 거임 / 나, 자식 클래스에서만 접근 가능하고 클래스 외부에서는 접근 안 됨 / 인스턴스를 통해서 접근이 안 됨
+ *
+ * x는 클래스의 내부 로직에 필요한 데이터나 메서드, 외부에서 접근하면 안 되는 설정 값 같은 거 쓸 때 씀
+ *
+ * y는 인스턴스에서 공유하고 싶은 상수나 유틸리티 함수 같은 거 내려주고 싶을 때
+ * 그래서 이거 안 하면 예를 들어서 부모 클래스에서 static PI = 3.14 같은 거 할 때
+ * static 안 해주면 인스턴스에서 "자식.pi = 3.14" 이런 거 해 줘야하고
+ * 자식 100만개면 "자식.pi = 3.14" 이런 거 100만개 해 줘야 됨.
+ *
+ * z는 자식 클래스에서 부모 클래스의 특정 기능을 확장하거나 수정하고 싶을 때 씀.
+ */
+class User {
+    constructor() {
+        this.z = 30;
+    }
+}
+User.x = 10;
+User.y = 20;
+// x 속성에 숫자를 더해주는 함수
+class Coordinates {
+    static addOne(number) {
+        let a = (Coordinates.x += number);
+        console.log(a);
+    }
+    static printX() {
+        console.log(Coordinates.x);
+    }
+}
+Coordinates.x = 10;
+Coordinates.y = 20;
+Coordinates.addOne(3); // 이렇게 하면 x가 3 더해져야 함
+Coordinates.addOne(4); // 이렇게 하면 x가 4 더해져야 함
+Coordinates.printX(); // 이렇게 하면 콘솔창에 x값이 출력되어야 함
+// index.html에 가로 30px, 세로 30px, 배경색이 'red' 의 <div> 박스가 무작위로 배치
+class Square {
+    constructor(a, b, c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+    draw() {
+        let x = Math.random() * (400 - 30);
+        let y = Math.random() * (400 - 30);
+        let content = `<div style="background-color: ${this.c}; width: ${this.a}px; height: ${this.b}px; position: absolute;
+          left: ${x}px;
+          top: ${y}px;"></div>`;
+        let drawing = document.querySelector("#drawing");
+        drawing === null || drawing === void 0 ? void 0 : drawing.insertAdjacentHTML("beforeend", content);
+    }
+}
+let square = new Square(30, 30, "red");
+square.draw();
+square.draw();
+square.draw();
+square.draw();
+// 파라미터로 object 하나를 선택적으로 집어넣을 수 있고 아무것도 return 해주지 않는 함수
+let objectFunction1 = () => ({ name: "Alice", age: 30 });
+console.log(objectFunction1);
+let objectFunction2 = () => { };
+console.log(objectFunction2);
+let dog1 = "bark";
+let dog2 = { name: "paw" };
+console.log(dog1);
+console.log(dog2);
+/**
+ * 주어진 인자의 길이를 출력하는 함수입니다.
+ *
+ * @param input - 문자열 또는 문자열 배열을 입력받습니다.
+ */
+function logLength(input) {
+    console.log(input.length);
+}
+// 문자열 인자를 사용한 예시
+logLength("hello"); // 출력: 5
+// 문자열 배열 인자를 사용한 예시
+logLength(["kim", "park"]); // 출력: 2
+/**
+ * JSON 문자열을 받아 지정된 타입으로 파싱하는 함수입니다.
+ *
+ * @param jsonString - JSON 형식의 문자열입니다.
+ * @returns 지정된 타입으로 파싱된 객체를 반환합니다.
+ */
+const parseJson = (jsonString) => {
+    return JSON.parse(jsonString);
+};
+// JSON 문자열 예시
+const jsonData = '{"name": "dog", "age": 1}';
+// Animal 인터페이스에 맞춰 JSON 문자열을 파싱합니다.
+const result = parseJson(jsonData);
+// 파싱된 결과를 출력합니다.
+console.log(result);
+/**
+ * 사람(Person)을 나타내는 제네릭 클래스입니다.
+ *
+ * @template T - 이름의 타입을 나타내는 제네릭 타입 매개변수입니다.
+ */
+class Person {
+    /**
+     * Person 클래스의 인스턴스를 생성하는 생성자입니다.
+     *
+     * @param name - 이름을 설정하기 위한 값입니다. 타입은 제네릭 T입니다.
+     */
+    constructor(name) {
+        this.name = name;
+    }
+}
+// 문자열 타입을 사용하여 Person 인스턴스를 생성합니다.
+const personInstance = new Person("인간");
+// personInstance의 name 속성에 접근합니다.
+console.log(personInstance.name); // 출력: '인간'
+export {};
