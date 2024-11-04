@@ -138,10 +138,30 @@ type A = { name: string; age: number };
 type B = { name: string; sex: string };
 type C = { name: number; sex: string }; // B랑 동일한데, 'name'의 타입을 number으로 변경
 
-type D = A & B; // 타입 별칭을 합쳤을 때 중복된 속성이 있는 경우 => { name:string; age:number; sex:string }
-type E = B & C; // 타입 별칭을 합쳤을 때 중복된 속성이 있는 경우 + 'name'의 타입이 string과 number로 충돌하는 경우 => { name: ??; sex:string }
+type AB = A & B; // 타입 별칭을 합쳤을 때 중복된 속성이 있는 경우 => { name:string; age:number; sex:string }
+type BC = B & C; // 타입 별칭을 합쳤을 때 중복된 속성이 있는 경우 + 'name'의 타입이 string과 number로 충돌하는 경우 => { name: ??; sex:string }
 
-let ab: D = { name: "Lee", age: 31, sex: "male" };
+let ab: AB = { name: "Lee", age: 31, sex: "male" };
 console.log(ab); // { name: 'Lee', age: 31, sex: 'male' }
 
-// let bc: E = { name: "Lee", sex: "male" }; // "타입 'string'을 타입 'never'에 할당할 수 없습니다.
+// let bc: BC = { name: "Lee", sex: "male" }; // "타입 'string'을 타입 'never'에 할당할 수 없습니다.
+
+// 타입 별칭 + readonly
+type ItemAttributes = {
+  color?: string;
+  size: number;
+  readonly position: number[];
+};
+let item: ItemAttributes = { size: 10, position: [1, 2, 3] };
+// item.position = [2, 3, 4]; // 'position'에 할당할 수 없습니다. 이는 읽기 전용 속성이기 때문입니다.
+
+// readonly 키워드를 설명하려면...
+const username = {
+  lastname: "Lee",
+};
+username.lastname = "Ahn"; // const 변수인데 오류가 나지 않음
+/**
+ * Why?)
+ * const 변수는 재할당만 막아줄 뿐, 그 안에 있는 객체의 속성을 변경하는 것까지는 막지 못함
+ * 그래서 객체의 속성이 변경되지 않게 하려면 TypeScript의 readonly 키워드를 사용하면 됨
+ */
