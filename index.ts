@@ -743,3 +743,113 @@ class Square {
 }
 let square = new Square(30, 30, "red");
 new Array(8).fill(0).reduce(() => square.draw(), 0); // 8번 실행
+
+// ===========================
+// Generic 함수 1 (기본 구조)
+// ===========================
+// function identity<T>(arg: T): T {
+//   return arg;
+// }
+const identity = <T>(arg: T): T => {
+  return arg;
+};
+let result1 = identity<string>("안녕하세요");
+let result2 = identity<number>(10);
+// TypeScript가 자동으로 타입을 추론
+let result3 = identity("안녕하세요"); // string으로 추론
+let result4 = identity(42); // number로 추론
+
+// ===========================
+// Generic 함수 2 (제너릭 제약)
+// ===========================
+const loggingIdentity = <T extends { length: number }>(arg: T): T => {
+  console.log(arg.length); // 이제 length 속성을 사용할 수 있습니다.
+  return arg;
+};
+loggingIdentity<{ length: number }>({ length: 10 }); // 10
+
+// ===========================
+// Generic 함수 3 (여러 타입 매개변수 사용)
+// ===========================
+const pair = <K, V>(key: K, value: V): [K, V] => {
+  return [key, value];
+};
+
+let p = pair<string, number>("age", 30);
+console.log(p); // ['age', 30]
+/**
+ * Generic 함수
+ * - 언제 사용해야 할까?
+ *   - 하나의 함수로 다양한 타입을 처리하고 싶을 때
+ *   - 잘못된 타입의 값을 전달할 경우 컴파일 타임에 오류를 잡을 수 있음.
+ */
+// ===========================
+// Generic 함수 4 (예시)
+// ===========================
+// ---------------------------
+// 일반 함수
+// ---------------------------
+const double = (value: number): number => value * 2;
+console.log(double(5)); // 10
+// console.log(double("5")); // 오류 발생
+// ---------------------------
+// Generic 함수
+// ---------------------------
+const echo = <T>(value: T): T => {
+  return value;
+};
+console.log(echo(5)); // 5 (number로 추론)
+console.log(echo("안녕하세요")); // 안녕하세요 (string으로 추론)
+console.log(echo([1, 2, 3])); // [1, 2, 3] (number[]로 추론)
+
+// ===========================
+// Generic 함수 5
+// ===========================
+/**
+ * 주어진 입력의 길이를 계산합니다.
+ *
+ * @param input - 길이를 계산할 입력값. 문자열 또는 배열일 수 있습니다.
+ * @returns 입력값이 문자열이거나 배열일 경우 길이를 반환하고,
+ *          그 외의 경우에는 undefined를 반환합니다.
+ */
+const calculateLength = <T extends string | string[]>(input: T): number => {
+  return input.length;
+};
+console.log(calculateLength<string>("안녕하세요")); // 5
+console.log(calculateLength<string[]>(["Kim", "Park"])); // 2
+
+// ===========================
+// Generic 함수 6
+// ===========================
+interface Creature {
+  name: string;
+  age: number;
+}
+/**
+ * JSON 문자열을 파싱하여 주어진 타입의 객체로 변환합니다.
+ *
+ * @template Creature - 변환할 객체의 타입을 지정합니다.
+ * @param input - JSON 형식의 문자열입니다.
+ * @returns JSON 문자열을 파싱하여 객체로 반환합니다.
+ */
+const parseCreatureData = <Creature>(input: string): Creature => {
+  return JSON.parse(input);
+};
+let data = '{"name" : "dog", "age" : 1 }';
+let result = parseCreatureData<Creature>(data);
+console.log(result); // {name: 'dog', age: 1}
+
+// ===========================
+// Generic 함수 7
+// ===========================
+class ValueHolder<T> {
+  constructor(public input: T) {
+    this.input = input;
+  }
+}
+let valueHolder1 = new ValueHolder<string>("안녕하세요");
+console.log(valueHolder1.input); // 안녕하세요
+let valueHolder2 = new ValueHolder<number>(12345);
+console.log(valueHolder2.input); // 12345
+let valueHolder3 = new ValueHolder<(string | number)[]>(["Ahn", "Lee", 1, 2, 3]);
+console.log(valueHolder3.input); // ['Ahn', 'Lee', 1, 2, 3]
