@@ -221,7 +221,7 @@ if ((title === null || title === void 0 ? void 0 : title.innerHTML) != undefined
     title.innerHTML = "안녕하세요";
 }
 // ===========================
-// HTML 제어 5 (optional chaining)
+// HTML 제어 5 (a tag)
 // ===========================
 let link = document.querySelector(".link");
 // if (link instanceof HTMLElement) {
@@ -230,3 +230,69 @@ let link = document.querySelector(".link");
 if (link instanceof HTMLAnchorElement) {
     link.href = "https://www.kakaocorp.com/"; // 정상
 }
+// ===========================
+// HTML 제어 5 (event listener + optional chaining + img tag)
+// ===========================
+let button = document.querySelector("#button");
+// button.addEventListener("click", () => {}); // 'button'은(는) 'null'일 수 있습니다.
+button === null || button === void 0 ? void 0 : button.addEventListener("click", () => {
+    let image = document.querySelector("#image");
+    if (image instanceof HTMLImageElement) {
+        image.src = "./images/Nijika_Ijichi.PNG";
+    }
+});
+// ===========================
+// HTML 제어 6 (a tags + optional chaining)
+// ===========================
+let links = document.querySelectorAll(".naver");
+links.forEach((link) => {
+    if (link instanceof HTMLAnchorElement) {
+        link.href = "https://www.daum.net";
+    }
+});
+// ===========================
+// class 타입 지정 1
+// ===========================
+class Car {
+    constructor(model, price) {
+        this.model = model;
+        this.price = price;
+    }
+    tax() {
+        return this.price * 0.1;
+    }
+}
+let car = new Car("소나타", 3000);
+console.log(car); // {model: '소나타', price: 3000}
+console.log(car.tax()); // 300
+// ===========================
+// class 타입 지정 2 (reduce 함수의 초기값을 설정하여 array 타입 지정)
+// ===========================
+class Word {
+    constructor(...input) {
+        const { strings, numbers } = input.reduce((acc, curr) => {
+            if (typeof curr === "string") {
+                acc.strings.push(curr);
+            }
+            if (typeof curr === "number") {
+                acc.numbers.push(curr);
+            }
+            return acc;
+        }, { strings: [], numbers: [] });
+        this.str = strings;
+        this.num = numbers;
+    }
+}
+let word = new Word(1, 2, "Ahn", 3, "Lee");
+console.log(word.str); // ['Ahn', 'Lee']
+console.log(word.num); // [1, 2, 3]
+let product = { brand: "Samsung", serialNumber: 1360, model: ["TV", "phone"] };
+let cart = [
+    { product: "청소기", price: 7000 },
+    { product: "삼다수", price: 800 },
+];
+let card = { product: "청소기", price: 7000, card: false };
+let calculation = {
+    plus: (x, y) => x + y,
+    minus: (x, y) => x - y,
+};

@@ -335,7 +335,7 @@ if (title?.innerHTML != undefined) {
 }
 
 // ===========================
-// HTML 제어 5 (optional chaining)
+// HTML 제어 5 (a tag)
 // ===========================
 let link = document.querySelector(".link");
 // if (link instanceof HTMLElement) {
@@ -344,3 +344,138 @@ let link = document.querySelector(".link");
 if (link instanceof HTMLAnchorElement) {
   link.href = "https://www.kakaocorp.com/"; // 정상
 }
+
+// ===========================
+// HTML 제어 5 (event listener + optional chaining + img tag)
+// ===========================
+let button = document.querySelector("#button");
+// button.addEventListener("click", () => {}); // 'button'은(는) 'null'일 수 있습니다.
+button?.addEventListener("click", () => {
+  let image = document.querySelector("#image");
+  if (image instanceof HTMLImageElement) {
+    image.src = "./images/Nijika_Ijichi.PNG";
+  }
+});
+
+// ===========================
+// HTML 제어 6 (a tags + optional chaining)
+// ===========================
+let links = document.querySelectorAll(".naver");
+links.forEach((link) => {
+  if (link instanceof HTMLAnchorElement) {
+    link.href = "https://www.daum.net";
+  }
+});
+
+// ===========================
+// class 타입 지정 1
+// ===========================
+class Car {
+  model: string;
+  price: number;
+  constructor(model: string, price: number) {
+    this.model = model;
+    this.price = price;
+  }
+  tax(): number {
+    return this.price * 0.1;
+  }
+}
+let car = new Car("소나타", 3000);
+console.log(car); // {model: '소나타', price: 3000}
+console.log(car.tax()); // 300
+
+// ===========================
+// class 타입 지정 2 (reduce 함수의 초기값을 설정하여 array 타입 지정)
+// ===========================
+class Word {
+  str: string[];
+  num: number[];
+  constructor(...input: (string | number)[]) {
+    const { strings, numbers } = input.reduce(
+      (acc, curr) => {
+        if (typeof curr === "string") {
+          acc.strings.push(curr);
+        }
+        if (typeof curr === "number") {
+          acc.numbers.push(curr);
+        }
+        return acc;
+      },
+      { strings: [] as string[], numbers: [] as number[] }
+    );
+    this.str = strings;
+    this.num = numbers;
+  }
+}
+let word = new Word(1, 2, "Ahn", 3, "Lee");
+console.log(word.str); // ['Ahn', 'Lee']
+console.log(word.num); // [1, 2, 3]
+
+// ===========================
+// interface 타입 지정 (extends)
+// ===========================
+interface Animal {
+  name: string;
+}
+interface Cat extends Animal {
+  legs: number;
+}
+
+// ===========================
+// interface 타입 지정 (타입 이름 중복 선언 시 interface: 가능, type: 불가능)
+// ===========================
+interface Animal {
+  name: string;
+}
+interface Animal {
+  legs: number;
+}
+// type Animal2 = {
+//   name :string
+// }
+// type Animal2 = {
+//   legs :number
+// } // 'Animal2' 식별자가 중복되었습니다.
+
+// ===========================
+// interface 타입 지정
+// ===========================
+interface Product {
+  brand: string;
+  serialNumber: number;
+  model: string[];
+}
+let product: Product = { brand: "Samsung", serialNumber: 1360, model: ["TV", "phone"] };
+
+// ===========================
+// interface 타입 지정 (array)
+// ===========================
+interface Cart {
+  product: string;
+  price: number;
+}
+let cart: Cart[] = [
+  { product: "청소기", price: 7000 },
+  { product: "삼다수", price: 800 },
+];
+
+// ===========================
+// interface 타입 지정 (extends)
+// ===========================
+interface Card extends Cart {
+  card: boolean;
+}
+let card: Card = { product: "청소기", price: 7000, card: false };
+
+// ===========================
+// interface 타입 지정 (function inside an object)
+// ===========================
+interface Calculation {
+  plus: (x: number, y: number) => number;
+  minus: (x: number, y: number) => number;
+}
+let calculation: Calculation = {
+  plus: (x, y) => x + y,
+  minus: (x, y) => x - y,
+};
