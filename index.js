@@ -296,3 +296,89 @@ let calculation = {
     plus: (x, y) => x + y,
     minus: (x, y) => x - y,
 };
+// ===========================
+// rest parameter
+// ===========================
+const findMax = (...input) => {
+    return Math.max(...input);
+};
+console.log(findMax(1, 2, 3, 4, 5)); // 5
+// ===========================
+// destructuring (object)
+// ===========================
+const logUserData = ({ user, comment, admin }) => {
+    console.log({ user, comment, admin }); // {user: 'kim', comment: Array(3), admin: false}
+};
+logUserData({ user: "kim", comment: [3, 5, 4], admin: false });
+// ===========================
+// destructuring (array)
+// ===========================
+const processData = ([productionYear, productName, isAvailable]) => {
+    console.log([productionYear, productName, isAvailable]); // [40, 'wine', false]
+};
+processData([40, "wine", false]);
+const getAnimalAction = (animal) => {
+    if ("fly" in animal) {
+        return animal.fly;
+    }
+    return animal.swim;
+};
+console.log(getAnimalAction({ swim: "Bird", fly: true })); // true
+console.log(getAnimalAction({ swim: "Fish" })); // Fish
+// ===========================
+// 타입 축소 (narrowing > instance created from a class)
+// ===========================
+let date = new Date();
+if (date instanceof Date) {
+    console.log("클래스로 생성된 인스턴스인 경우 instanceof를 사용하여 타입을 좁히세요.");
+}
+const logVehicleColor = (input) => {
+    if ("8개" === input.wheel) {
+        console.log("이 버스의 색깔은 " + input.color);
+    }
+    else {
+        console.log("이 자전거의 색깔은 " + input.color);
+    }
+};
+logVehicleColor({ wheel: "8개", color: "빨강" }); // 이 버스의 색깔은 빨강
+logVehicleColor({ wheel: "2개", color: "노랑" }); // 이 자전거의 색깔은 노랑
+// ===========================
+// never type
+// ===========================
+function func1() {
+    throw new Error();
+} // void 타입
+let func2 = function () {
+    throw new Error();
+}; // never 타입
+const func3 = () => {
+    throw new Error();
+}; // never 타입
+// ===========================
+// never type 1 (함수가 항상 예외를 던지는 경우)
+// ===========================
+const throwError = (message) => {
+    throw new Error(message);
+};
+// ===========================
+// never type 2 (무한 루프에 빠지는 경우)
+// ===========================
+const infiniteLoop = () => {
+    while (true) { }
+};
+// ===========================
+// never type 3 (타입 축소(narrowing)를 통해 가능한 모든 경우를 처리했으나 특정 경우에 도달할 수 없는 경우)
+// ===========================
+const handlePet = (pet) => {
+    switch (pet) {
+        case "cat":
+            console.log("고양이에요");
+            break;
+        case "dog":
+            console.log("강아지에요");
+            break;
+        default:
+            let defaultPet = pet; // 여기에 도달할 수 없으므로 defaultPet의 타입은 never를 사용합니다.
+            throw new Error(`처리할 수 없는 경우: ${defaultPet}`);
+    }
+};

@@ -479,3 +479,118 @@ let calculation: Calculation = {
   plus: (x, y) => x + y,
   minus: (x, y) => x - y,
 };
+
+// ===========================
+// rest parameter
+// ===========================
+const findMax = (...input: number[]): number => {
+  return Math.max(...input);
+};
+console.log(findMax(1, 2, 3, 4, 5)); // 5
+
+// ===========================
+// destructuring (object)
+// ===========================
+const logUserData = ({ user, comment, admin }: { user: string; comment: number[]; admin: boolean }): void => {
+  console.log({ user, comment, admin }); // {user: 'kim', comment: Array(3), admin: false}
+};
+logUserData({ user: "kim", comment: [3, 5, 4], admin: false });
+
+// ===========================
+// destructuring (array)
+// ===========================
+const processData = ([productionYear, productName, isAvailable]: [number, string, boolean]): void => {
+  console.log([productionYear, productName, isAvailable]); // [40, 'wine', false]
+};
+processData([40, "wine", false]);
+
+// ===========================
+// 타입 축소 (narrowing > in 연산자)
+// - 배타적인 속성이 합쳐진 경우 사용
+// ===========================
+type Fish = { swim: string };
+type Bird = { swim: string; fly: boolean };
+const getAnimalAction = (animal: Fish | Bird): string | boolean => {
+  if ("fly" in animal) {
+    return animal.fly;
+  }
+  return animal.swim;
+};
+console.log(getAnimalAction({ swim: "Bird", fly: true })); // true
+console.log(getAnimalAction({ swim: "Fish" })); // Fish
+
+// ===========================
+// 타입 축소 (narrowing > instance created from a class)
+// ===========================
+let date = new Date();
+if (date instanceof Date) {
+  console.log("클래스로 생성된 인스턴스인 경우 instanceof를 사용하여 타입을 좁히세요.");
+}
+
+// ===========================
+// 타입 축소 (narrowing > literal type)
+// - 속성이 동일해서 in 연산자를 통해 비교가 불가능한데, 리터럴 타입이 존재하는 경우
+// ===========================
+type Bus = {
+  wheel: "8개";
+  color: string;
+};
+type Bicycle = {
+  wheel: "2개";
+  color: string;
+};
+const logVehicleColor = (input: Bus | Bicycle): void => {
+  if ("8개" === input.wheel) {
+    console.log("이 버스의 색깔은 " + input.color);
+  } else {
+    console.log("이 자전거의 색깔은 " + input.color);
+  }
+};
+logVehicleColor({ wheel: "8개", color: "빨강" }); // 이 버스의 색깔은 빨강
+logVehicleColor({ wheel: "2개", color: "노랑" }); // 이 자전거의 색깔은 노랑
+
+// ===========================
+// never type
+// ===========================
+function func1() {
+  throw new Error();
+} // void 타입
+
+let func2 = function () {
+  throw new Error();
+}; // never 타입
+
+const func3 = () => {
+  throw new Error();
+}; // never 타입
+
+// ===========================
+// never type 1 (함수가 항상 예외를 던지는 경우)
+// ===========================
+const throwError = (message: string): never => {
+  throw new Error(message);
+};
+
+// ===========================
+// never type 2 (무한 루프에 빠지는 경우)
+// ===========================
+const infiniteLoop = (): never => {
+  while (true) {}
+};
+
+// ===========================
+// never type 3 (타입 축소(narrowing)를 통해 가능한 모든 경우를 처리했으나 특정 경우에 도달할 수 없는 경우)
+// ===========================
+const handlePet = (pet: "cat" | "dog"): void => {
+  switch (pet) {
+    case "cat":
+      console.log("고양이에요");
+      break;
+    case "dog":
+      console.log("강아지에요");
+      break;
+    default:
+      let defaultPet: never = pet; // 여기에 도달할 수 없으므로 defaultPet의 타입은 never를 사용합니다.
+      throw new Error(`처리할 수 없는 경우: ${defaultPet}`);
+  }
+};
