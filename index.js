@@ -382,3 +382,157 @@ const handlePet = (pet) => {
             throw new Error(`처리할 수 없는 경우: ${defaultPet}`);
     }
 };
+// ===========================
+// 접근 제어자 (public inside a class)
+// ===========================
+class Fruit {
+    constructor(name, color) {
+        this.name = name;
+        this.color = color;
+        this.name = name;
+        this.color = color;
+    }
+}
+const fruit = new Fruit("사과", "빨강");
+console.log(fruit.name); // "사과"
+console.log(fruit.color); // "빨강"
+// ===========================
+// 접근 제어자 (private inside a class)
+// ===========================
+class Beverage {
+    constructor(name, temperature) {
+        this.name = name;
+        this.temperature = temperature;
+        this.name = name;
+        this.temperature = temperature;
+    }
+    getName() {
+        return this.name;
+    }
+    setName(name) {
+        this.name = name;
+    }
+}
+const beverage = new Beverage("콜라", 5);
+// console.log(beverage.name); // 오류: Property 'name' is private and only accessible within class 'Beverage'.
+console.log(beverage.getName()); // 콜라
+/**
+ * private 속성을 클래스 외부에서 수정해야 할 경우
+ * 1. 클래스 내부에 private 속성을 수정하는 메서드 생성
+ * 2. 해당 수정 메서드를 외부에서 호출
+ */
+beverage.setName("사이다");
+console.log(beverage.getName()); // 사이다
+// ===========================
+// 접근 제어자 (private, protected) + function, method
+// ===========================
+/**
+ * 1. private
+ * - 언제 사용해야 할까?
+ *   - 데이터 처리 로직에서 내부 상태나 중간 값을 유지하고 싶을 때 사용.
+ *   - 외부에서 직접 접근하지 못하도록 하여 데이터 무결성을 보존하고, 객체의 상태를 안전하게 보호할 필요가 있을 때 적합.
+ *
+ * 2. protected
+ * - 언제 사용해야 할까?
+ *   - 상속받은 클래스에서 부모 클래스의 속성을 사용할 필요가 있을 때 사용.
+ *   - 부모 클래스의 protected 속성을 통해 하위 클래스가 필요한 데이터를 가공하거나 처리할 수 있게 함.
+ *
+ * 3. 함수와 메서드
+ * - 함수: 독립적으로 정의된 코드 블록으로, 특정 입력값을 받아 작업을 수행하고 결과를 반환.
+ * - 메서드: 특정 객체의 속성으로 정의된 함수로, 그 객체와 밀접하게 관련되어 있으며 객체의 데이터를 다룸.
+ */
+// ===========================
+// static keyword in a class
+// ===========================
+class Chair {
+    constructor() {
+        this.color = "갈색";
+        this.height = 50;
+    }
+}
+let chair = new Chair();
+chair.color; // 가능
+// Chair.color; // 'typeof Chair' 형식에 'color' 속성이 없습니다.
+class Desk {
+    constructor() {
+        this.width = 1200;
+    }
+}
+Desk.color = "갈색";
+let desk = new Desk();
+// desk.color; // 'color' 속성이 'Desk' 형식에 없습니다. 대신 정적 멤버 'Desk.color'에 액세스하려고 하셨습니까?
+Desk.color; // 가능
+// ===========================
+// private static
+// ===========================
+class Position {
+    constructor() {
+        this.z = 3;
+    }
+    static getX() {
+        return Position.x;
+    }
+}
+Position.x = 1;
+Position.y = 2;
+/**
+ * private static
+ * - 언제 사용해야 할까?
+ *   - 클래스 외부에서 접근할 수 없음. (즉, private static으로 선언된 속성은 클래스 내부에서만 사용되고, 외부에서는 전혀 볼 수 없음.)
+ *   - 클래스 메서드 내에서만 접근이 가능. (즉, 인스턴스의 메서드에서 접근할 수 없음.)
+ * - 접근 방법
+ *   - Position.getX()와 같은 public + static 메서드를 통해 값에 접근할 수 있음.
+ */
+Position.getX();
+class Point {
+    static addOne(input) {
+        return (Point.x += input);
+    }
+    static printX() {
+        return Point.x;
+    }
+}
+Point.x = 10;
+Point.y = 20;
+console.log(Point.addOne(1)); // 11
+console.log(Point.addOne(10)); // 21
+console.log(Point.printX()); // 21
+// ===========================
+// public inside a class, type narrowing
+// ===========================
+/**
+ * 사각형을 나타내는 클래스입니다.
+ */
+class Square {
+    /**
+     * Square 클래스의 인스턴스를 생성합니다.
+     * @param width - 사각형의 너비입니다.
+     * @param height - 사각형의 높이입니다.
+     * @param color - 사각형의 색상입니다.
+     */
+    constructor(width, height, color) {
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+    }
+    /**
+     * 400x400 픽셀 영역 내의 임의 위치에 사각형을 그립니다.
+     */
+    draw() {
+        let x = Math.random() * (400 - 30);
+        let y = Math.random() * (400 - 30);
+        let content = `<div style="position: absolute;
+      width: ${this.width}px;
+      height: ${this.height}px;
+      background-color: ${this.color};
+      left: ${x}px;
+      top: ${y}px;"></div>`;
+        let drawing = document.querySelector("#drawing");
+        drawing === null || drawing === void 0 ? void 0 : drawing.insertAdjacentHTML("beforeend", content);
+    }
+}
+let square = new Square(30, 30, "red");
+new Array(8).fill(0).reduce(() => square.draw(), 0); // 8번 실행
